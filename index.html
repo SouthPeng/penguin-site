@@ -70,35 +70,132 @@
   });
  </script>
 　<h2>ペンギンクイズ</h2>
-　<p>ペンギンは、どちらの仲間でしょう？</p>
 
-　<button type="button" id="bird-answer">鳥の仲間</button>
-　<button type="button" id="fish-answer">魚の仲間</button>
+<p id="quiz-progress"></p>
+<p id="quiz-question"></p>
 
-　<p id="quiz-result" aria-live="polite">答えを選んでください。</p>
+<button type="button" id="answer-a"></button>
+<button type="button" id="answer-b"></button>
 
-　<script>
-  const birdButton = document.getElementById("bird-answer");
-  const fishButton = document.getElementById("fish-answer");
-  const quizResult = document.getElementById("quiz-result");
+<p id="quiz-result" aria-live="polite"></p>
 
-  function checkAnswer(answer) {
-    if (answer === "bird") {
-      quizResult.textContent = "正解🐧！ ペンギンは鳥の仲間です。";
-　　　quizResult.style.color = "green";
-    } else {
-      quizResult.textContent = "残念！ 泳ぐのが得意ですが、鳥の仲間です。";
-      quizResult.style.color = "red";
+<button type="button" id="next-question" hidden>次の問題へ</button>
+<button type="button" id="restart-quiz" hidden>もう一度挑戦する</button>
+
+<script>
+  // 配列：3問のデータを順番にまとめます
+  const questions = [
+    {
+      question: "ペンギンは、どちらの仲間でしょう？",
+      choices: ["鳥の仲間", "魚の仲間"],
+      correct: 0
+    },
+    {
+      question: "ペンギンの体を覆っているのは？",
+      choices: ["うろこ", "羽毛"],
+      correct: 1
+    },
+    {
+      question: "ペンギンの呼吸に必要なのは？",
+      choices: ["水中のえら呼吸", "水面に出て空気を吸うこと"],
+      correct: 1
     }
+  ];
+
+  // 変数：今の問題番号と正解数を覚えます
+  let currentQuestion = 0;
+  let score = 0;
+
+  const progress = document.getElementById("quiz-progress");
+  const questionText = document.getElementById("quiz-question");
+  const answerA = document.getElementById("answer-a");
+  const answerB = document.getElementById("answer-b");
+  const result = document.getElementById("quiz-result");
+  const nextButton = document.getElementById("next-question");
+  const restartButton = document.getElementById("restart-quiz");
+
+  // 今の問題を画面に表示します
+  function showQuestion() {
+    const quiz = questions[currentQuestion];
+
+    progress.textContent =
+      (currentQuestion + 1) + " / " + questions.length + " 問目";
+
+    questionText.textContent = quiz.question;
+    answerA.textContent = quiz.choices[0];
+    answerB.textContent = quiz.choices[1];
+
+    answerA.hidden = false;
+    answerB.hidden = false;
+    answerA.disabled = false;
+    answerB.disabled = false;
+
+    result.textContent = "";
+    nextButton.hidden = true;
+    restartButton.hidden = true;
   }
 
-  birdButton.addEventListener("click", function () {
-    checkAnswer("bird");
+  // 選んだ答えを判定します
+  function checkAnswer(selectedAnswer) {
+    const quiz = questions[currentQuestion];
+
+    // 同じ問題で何度も回答できないようにします
+    answerA.disabled = true;
+    answerB.disabled = true;
+
+    if (selectedAnswer === quiz.correct) {
+      score = score + 1;
+      result.textContent = "正解！🐧";
+      result.style.color = "green";
+    } else {
+      result.textContent =
+        "残念！ 正解は「" + quiz.choices[quiz.correct] + "」です。";
+      result.style.color = "red";
+    }
+
+    nextButton.textContent =
+      currentQuestion === questions.length - 1
+        ? "結果を見る"
+        : "次の問題へ";
+
+    nextButton.hidden = false;
+  }
+
+  answerA.addEventListener("click", function () {
+    checkAnswer(0);
   });
 
-  fishButton.addEventListener("click", function () {
-    checkAnswer("fish");
+  answerB.addEventListener("click", function () {
+    checkAnswer(1);
   });
+
+  nextButton.addEventListener("click", function () {
+    currentQuestion = currentQuestion + 1;
+
+    if (currentQuestion < questions.length) {
+      showQuestion();
+    } else {
+      progress.textContent = "クイズ終了！";
+      questionText.textContent =
+        questions.length + "問中、" + score + "問正解でした！🐧";
+
+      answerA.hidden = true;
+      answerB.hidden = true;
+      nextButton.hidden = true;
+      result.textContent = "";
+      restartButton.hidden = false;
+    }
+  });
+
+  restartButton.addEventListener("click", function () {
+    currentQuestion = 0;
+    score = 0;
+    showQuestion();
+  });
+
+  // ページを開いたら最初の問題を表示します
+  showQuestion();
+</script>
 </script>
 </body>
 </html>
