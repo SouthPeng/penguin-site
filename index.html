@@ -56,5 +56,18 @@
     <li>暮らしている場所</li>
     <li>好きな食べ物</li>
   </ul>
+ <h2>ペンギンからのメッセージ</h2>
+
+ <button id="penguin-button" type="button">ペンギンに話しかける</button>
+ <p id="penguin-message" aria-live="polite">ここに返事が表示されます。</p>
+
+ <script>
+  const button = document.getElementById("penguin-button");
+  const message = document.getElementById("penguin-message");
+
+  button.addEventListener("click", function () {
+    message.textContent = "こんにちは！ ペンギンの歴史へようこそ！";
+  });
+ </script>
 </body>
 </html>
