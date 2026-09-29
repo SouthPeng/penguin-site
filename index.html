@@ -85,8 +85,10 @@
   function checkAnswer(answer) {
     if (answer === "bird") {
       quizResult.textContent = "正解🐧！ ペンギンは鳥の仲間です。";
+　　　quizResult.style.color = "green";
     } else {
       quizResult.textContent = "残念！ 泳ぐのが得意ですが、鳥の仲間です。";
+      quizResult.style.color = "red";
     }
   }
 
